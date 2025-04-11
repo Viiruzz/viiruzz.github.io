@@ -1,12 +1,277 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Viiruzz Projects</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBee - Monitor de Colmena</title>
+    <style>
+        :root {
+            --primary: #FFD700;
+            --secondary: #FFA500;
+            --dark: #333;
+            --light: #f8f8f8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        header {
+            background-color: var(--primary);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo {
+            margin-right: 15px;
+            font-size: 2.8rem;
+        }
+        
+        .dashboard {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .metric-icon {
+            font-size: 1.8rem;
+            margin-right: 10px;
+        }
+        
+        .metric-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .metric-unit {
+            font-size: 1rem;
+            color: #888;
+            margin-left: 5px;
+        }
+        
+        .metric-trend {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .up {
+            color: #28a745;
+        }
+        
+        .down {
+            color: #dc3545;
+        }
+        
+        .stable {
+            color: #6c757d;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--dark);
+            color: white;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <h1>Perdón</h1>
-  <hr>
-</body>
+    <header>
+        <h1><span class="logo">🐝</span> SmartBee</h1>
+    </header>
+    
+    <div class="dashboard">
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">🌡️</span>
+                <h3 class="metric-title">Temperatura</h3>
+            </div>
+            <p class="metric-value" id="temperature">35.2<span class="metric-unit">°C</span></p>
+            <p class="metric-trend" id="temperature-trend"><span class="up">↑ 0.3°C</span> en los últimos 15 min</p>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">💧</span>
+                <h3 class="metric-title">Humedad</h3>
+            </div>
+            <p class="metric-value" id="humidity">62<span class="metric-unit">%</span></p>
+            <p class="metric-trend" id="humidity-trend"><span class="down">↓ 2%</span> en los últimos 15 min</p>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">🌫️</span>
+                <h3 class="metric-title">CO2</h3>
+            </div>
+            <p class="metric-value" id="co2">437<span class="metric-unit">ppm</span></p>
+            <p class="metric-trend" id="co2-trend"><span class="stable">→ Estable</span> en los últimos 15 min</p>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">💨</span>
+                <h3 class="metric-title">O2</h3>
+            </div>
+            <p class="metric-value" id="o2">20.9<span class="metric-unit">%</span></p>
+            <p class="metric-trend" id="o2-trend"><span class="up">↑ 0.1%</span> en los últimos 15 min</p>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">⚖️</span>
+                <h3 class="metric-title">Peso</h3>
+            </div>
+            <p class="metric-value" id="weight">24.7<span class="metric-unit">kg</span></p>
+            <p class="metric-trend" id="weight-trend"><span class="up">↑ 0.2kg</span> en los últimos 15 min</p>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">🔊</span>
+                <h3 class="metric-title">Ruido</h3>
+            </div>
+            <p class="metric-value" id="noise">42<span class="metric-unit">dB</span></p>
+            <p class="metric-trend" id="noise-trend"><span class="down">↓ 3dB</span> en los últimos 15 min</p>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-icon">🔋</span>
+                <h3 class="metric-title">Batería</h3>
+            </div>
+            <p class="metric-value" id="battery">3.8<span class="metric-unit">V</span></p>
+            <p class="metric-trend" id="battery-trend"><span class="down">↓ 0.1V</span> en los últimos 15 min</p>
+        </div>
+    </div>
+    
+    <footer>
+        © 2025 SmartBee - Monitoreo Inteligente de Colmenas
+    </footer>
 
+    <script>
+        // Rangos para cada métrica
+        const ranges = {
+            temperature: { min: 34.0, max: 36.5, decimals: 1 },
+            humidity: { min: 55, max: 70, decimals: 0 },
+            co2: { min: 400, max: 500, decimals: 0 },
+            o2: { min: 20.5, max: 21.2, decimals: 1 },
+            weight: { min: 24.0, max: 25.5, decimals: 1 },
+            noise: { min: 38, max: 47, decimals: 0 },
+            battery: { min: 3.7, max: 4.2, decimals: 1 }
+        };
+        
+        // Tendencias posibles
+        const trends = ["up", "down", "stable"];
+        const trendSymbols = {
+            up: "↑",
+            down: "↓",
+            stable: "→"
+        };
+        const trendClasses = {
+            up: "up",
+            down: "down",
+            stable: "stable"
+        };
+        
+        // Función para generar un número aleatorio dentro de un rango con decimales específicos
+        function getRandomValue(min, max, decimals) {
+            const value = Math.random() * (max - min) + min;
+            return parseFloat(value.toFixed(decimals));
+        }
+        
+        // Función para generar una tendencia aleatoria
+        function getRandomTrend() {
+            return trends[Math.floor(Math.random() * trends.length)];
+        }
+        
+        // Función para actualizar una métrica
+        function updateMetric(id, unit, range) {
+            const value = getRandomValue(range.min, range.max, range.decimals);
+            const trend = getRandomTrend();
+            const trendChange = getRandomValue(0.1, 0.5, 1);
+            
+            document.getElementById(id).innerHTML = `${value}<span class="metric-unit">${unit}</span>`;
+            
+            let trendText = "";
+            if (trend === "up") {
+                trendText = `<span class="${trendClasses.up}">${trendSymbols.up} ${trendChange}${unit}</span> en los últimos 15 min`;
+            } else if (trend === "down") {
+                trendText = `<span class="${trendClasses.down}">${trendSymbols.down} ${trendChange}${unit}</span> en los últimos 15 min`;
+            } else {
+                trendText = `<span class="${trendClasses.stable}">${trendSymbols.stable} Estable</span> en los últimos 15 min`;
+            }
+            
+            document.getElementById(`${id}-trend`).innerHTML = trendText;
+        }
+        
+        // Función para actualizar todas las métricas
+        function updateAllMetrics() {
+            updateMetric("temperature", "°C", ranges.temperature);
+            updateMetric("humidity", "%", ranges.humidity);
+            updateMetric("co2", "ppm", ranges.co2);
+            updateMetric("o2", "%", ranges.o2);
+            updateMetric("weight", "kg", ranges.weight);
+            updateMetric("noise", "dB", ranges.noise);
+            updateMetric("battery", "V", ranges.battery);
+        }
+        
+        // Actualizar métricas cada 3 segundos
+        setInterval(updateAllMetrics, 3000);
+        
+        // Actualizar métricas al cargar la página
+        updateAllMetrics();
+    </script>
+</body>
 </html>
