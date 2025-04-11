@@ -192,19 +192,6 @@
             margin-top: 30px;
         }
         
-        .highlight {
-            animation: highlight 2s ease-in-out;
-        }
-        
-        @keyframes highlight {
-            0% {
-                background-color: rgba(255, 215, 0, 0.3);
-            }
-            100% {
-                background-color: white;
-            }
-        }
-        
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -259,7 +246,7 @@
                 <span class="metric-icon">⚖️</span>
                 <h3 class="metric-title">Peso</h3>
             </div>
-            <p class="metric-value" id="weight">2.7<span class="metric-unit">kg</span></p>
+            <p class="metric-value" id="weight">24.7<span class="metric-unit">kg</span></p>
             <p class="metric-trend" id="weight-trend"><span class="up">↑ 0.2kg</span> en los últimos 15 min</p>
         </div>
         
@@ -293,13 +280,34 @@
             humidity: { min: 55, max: 70, decimals: 0 },
             co2: { min: 400, max: 500, decimals: 0 },
             o2: { min: 20.5, max: 21.2, decimals: 1 },
-            weight: { min: 2.0, max: 2.5, decimals: 1 },
+            weight: { min: 24.0, max: 25.5, decimals: 1 },
             noise: { min: 38, max: 47, decimals: 0 },
             battery: { min: 3.7, max: 4.2, decimals: 1 }
         };
         
+        // Tendencias fijas para cada métrica (solo dirección, no valor)
+        const fixedTrends = {
+            temperature: "up",
+            humidity: "down",
+            co2: "stable",
+            o2: "up",
+            weight: "up",
+            noise: "down",
+            battery: "down"
+        };
+        
+        // Rangos para los valores de tendencia
+        const trendRanges = {
+            temperature: { min: 0.1, max: 0.5, decimals: 1 },
+            humidity: { min: 1, max: 4, decimals: 0 },
+            co2: { min: 5, max: 15, decimals: 0 },
+            o2: { min: 0.1, max: 0.3, decimals: 1 },
+            weight: { min: 0.1, max: 0.4, decimals: 1 },
+            noise: { min: 1, max: 5, decimals: 0 },
+            battery: { min: 0.1, max: 0.2, decimals: 1 }
+        };
+        
         // Tendencias posibles
-        const trends = ["up", "down", "stable"];
         const trendSymbols = {
             up: "↑",
             down: "↓",
@@ -317,17 +325,13 @@
             return parseFloat(value.toFixed(decimals));
         }
         
-        // Función para generar una tendencia aleatoria
-        function getRandomTrend() {
-            return trends[Math.floor(Math.random() * trends.length)];
-        }
-        
         // Función para actualizar una métrica
-        function updateMetric(id, unit, range) {
-            const card = document.getElementById(`${id}-card`);
+        function updateMetric(id, unit, range, trendRange) {
             const value = getRandomValue(range.min, range.max, range.decimals);
-            const trend = getRandomTrend();
-            const trendChange = getRandomValue(0.1, 0.5, 1);
+            const trend = fixedTrends[id];
+            
+            // Valor aleatorio para la tendencia (pero manteniendo la dirección)
+            const trendChange = getRandomValue(trendRange.min, trendRange.max, trendRange.decimals);
             
             document.getElementById(id).innerHTML = `${value}<span class="metric-unit">${unit}</span>`;
             
@@ -341,22 +345,17 @@
             }
             
             document.getElementById(`${id}-trend`).innerHTML = trendText;
-            
-            // Añadir efecto de resaltado al actualizar
-            card.classList.remove("highlight");
-            void card.offsetWidth; // Truco para reiniciar la animación
-            card.classList.add("highlight");
         }
         
         // Función para actualizar todas las métricas
         function updateAllMetrics() {
-            updateMetric("temperature", "°C", ranges.temperature);
-            updateMetric("humidity", "%", ranges.humidity);
-            updateMetric("co2", "ppm", ranges.co2);
-            updateMetric("o2", "%", ranges.o2);
-            updateMetric("weight", "kg", ranges.weight);
-            updateMetric("noise", "dB", ranges.noise);
-            updateMetric("battery", "V", ranges.battery);
+            updateMetric("temperature", "°C", ranges.temperature, trendRanges.temperature);
+            updateMetric("humidity", "%", ranges.humidity, trendRanges.humidity);
+            updateMetric("co2", "ppm", ranges.co2, trendRanges.co2);
+            updateMetric("o2", "%", ranges.o2, trendRanges.o2);
+            updateMetric("weight", "kg", ranges.weight, trendRanges.weight);
+            updateMetric("noise", "dB", ranges.noise, trendRanges.noise);
+            updateMetric("battery", "V", ranges.battery, trendRanges.battery);
         }
         
         // Actualizar métricas cada 3 segundos
